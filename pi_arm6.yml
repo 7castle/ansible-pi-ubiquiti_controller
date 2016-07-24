@@ -1,0 +1,24 @@
+- name: "Remove pi1 arm6 webrtc shared lib"
+  file:
+    path: "/usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so"
+    state: "absent"
+  sudo: true
+
+- name: "Remvove pi1 arm6 snappy jar"
+  file:
+    path: "/usr/lib/unifi/lib/snappy-java-1.0.5.jar"
+    state: "absent"
+  sudo: true
+
+- name: "Copy pi1 arm6 compatible jar"
+  copy:
+    src: "files/snappy-java-1.1.2.jar"
+    dest: "/usr/lib/unifi/lib/snappy-java-1.1.2.jar"
+  sudo: true
+
+- name: "Link old jar version to pi1 arm6 compatible version"
+  file:
+    src: "/usr/lib/unifi/lib/snappy-java-1.1.2.jar"
+    dest: "/usr/lib/unifi/lib/snappy-java-1.0.5.jar"
+    state: "link"
+  sudo: true
