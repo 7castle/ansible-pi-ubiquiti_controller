@@ -1,0 +1,51 @@
+- name: "Upgrade apt packages"
+  apt:
+    upgrade: "dist"
+    update_cache: yes
+    cache_valid_time: "21600" # 6 hours
+  sudo: yes
+
+- name: "Install rpi-update"
+  apt:
+    name: "rpi-update"
+  sudo: yes
+
+- name: "Run rpi-update"
+  shell: "rpi-update"
+  sudo: yes
+
+- name: "Add unifi key"
+  apt_key:
+    keyserver: "keyserver.ubuntu.com"
+    id: "C0A52C50"
+  sudo: true
+  register: apt_key_result
+
+- name: "Add unify apt source"
+  apt_repository:
+    repo: "deb http://www.ubnt.com/downloads/unifi/debian unifi5 ubiquiti"
+  sudo: true
+  register: apt_repository_result
+
+- name: "Update cache if unifi key added or repo added"
+  apt:
+    update_cache: yes
+  sudo: true
+  when: "apt_key_result.changed == true or apt_repository_result.changed == true"
+
+- name: "Install unify package"
+  apt:
+    name: "unifi"
+  sudo: true
+
+- name: "Disable duplicate mongodb"
+  lineinfile:
+    line: "ENABLE_MONGODB=no"
+    dest: "/etc/mongodb.conf"
+  sudo: true
+
+# Execute pi1 specific tasks 
+- include: "pi_arm6.yml"
+  when: "ansible_architecture == 'armv6l'"
+
+     

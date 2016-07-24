@@ -1,0 +1,42 @@
+- name: "Create ubiquiti syslog log dir"
+  file:
+    path: "{{ syslog_ubiquiti_log_dir }}" 
+    state: "directory"
+  sudo: true
+
+- name: "Determine if syslog file needs to be created"
+  stat:
+    path: "{{ syslog_ubiquiti_log_file }}"
+  register: log_file_stat 
+
+- name: "Create ubiquiti syslog log file"
+  file:
+    path: "{{ syslog_ubiquiti_log_file }}" 
+    state: "touch"
+  when: "not log_file_stat.stat.exists"
+  sudo: true
+
+- name: "Lay down syslog ubiquiti log config"
+  template:
+    src: "templates/unifi.conf.j2"
+    dest: "{{ syslog_ubiquiti_conf_file }}"
+  sudo: true
+
+- name: "Lay down logrotate ubiquiti config"
+  template:
+    src: "templates/logrotate_ubiquiti.j2"
+    dest: "{{ syslog_logrotate_ubiquiti_file }}"
+  sudo: true
+
+- name: "Lay down logrotate unifi config"
+  template:
+    src: "templates/logrotate_unifi.j2"
+    dest: "{{ syslog_logrotate_unifi_file }}"
+  sudo: true
+
+  # TODO: make this a handler
+- name: "Restart syslog"
+  service:
+    name: "syslog-ng"
+    state: "restarted"
+  sudo: true

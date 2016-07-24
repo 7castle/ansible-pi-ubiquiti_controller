@@ -1,0 +1,11 @@
+source s_net {
+        tcp(port(514));
+        udp();
+};
+destination d_unifi {
+        file("{{ syslog_ubiquiti_log_file }}");
+};
+log {
+        source(s_net);
+        destination(d_unifi);
+};

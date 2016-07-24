@@ -1,0 +1,8 @@
+syslog_ubiquiti_conf_file: "/etc/syslog-ng/conf.d/unifi.conf"
+syslog_ubiquiti_log_file: "/var/log/Ubiquiti/UniFi.log"
+
+syslog_logrotate_ubiquiti_file: "/etc/logrotate.d/ubiquiti"
+syslog_ubiquiti_log_dir: "{{ syslog_ubiquiti_log_file | dirname }}"
+
+syslog_logrotate_unifi_file: "/etc/logrotate.d/unifi"
+syslog_unifi_log_dir: "/var/log/unifi"
